@@ -24,16 +24,19 @@ $email=$_POST['email'];
 
 
 
-$sql ="insert into `tablexam`(name,rollno,email)
-     values('$name','$rollno','$email')";
+$sql =$conn->prepare("insert into `tablexam`(name,rollno,email)
+     values(?,?,?)");
 
-$result=mysqli_query($conn,$sql);
+$sql->bindParam(1,$name,PDO::PARAM_STR);
+$sql->bindParam(2,$rollno,PDO::PARAM_INT);
+$sql->bindParam(3,$email,PDO::PARAM_STR);
 
-if($result){
+
+if($sql->execute()){
 //echo "Data inserted successfully";
 header('location:display.php');
 }else{
- die(mysqli_error($con));
+  die("Error inserting data: " . implode(", ", $sql->errorInfo()));
 }
 }
 
@@ -80,17 +83,17 @@ header('location:display.php');
         <form class="my-5" method="POST">
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" id="name" name="name" autocomplete="off">
+                <input type="text" class="form-control" id="name" name="name" autocomplete="off" required>
               </div>
 
               <div class="form-group">
                 <label>Rollno.</label>
-                <input type="text" class="form-control" id="rollno" name="rollno" autocomplete="off">
+                <input type="text" class="form-control" id="rollno" name="rollno" autocomplete="off" required>
               </div>
 
             <div class="form-group">
               <label>Email</label>
-              <input type="email" class="form-control" id="email" name="email" autocomplete="off">
+              <input type="email" class="form-control" id="email" name="email" autocomplete="off" required>
             </div>
            
 

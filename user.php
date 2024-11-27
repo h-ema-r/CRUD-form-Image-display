@@ -6,13 +6,15 @@ if (isset($_POST['submit'])) {
     $rollno = $_POST['rollno'];
     $email = $_POST['email'];
 
-    $sql = "INSERT INTO `tablexam` (name, rollno, email) VALUES ('$name', '$rollno', '$email')";
-    $result = mysqli_query($conn, $sql);
+    $sql = $conn->prepare("INSERT INTO `tablexam` (name, rollno, email) VALUES(?,?,?)");
+    $sql->bindParam(1,$name,PDO::PARAM_STR);
+    $sql->bindParam(2,$rollno,PDO::PARAM_INT);
+    $sql->bindParam(3,$email,PDO::PARAM_STR);
 
-    if ($result) {
+    if ($sql->execute()) {
         header('Location: display.php');
     } else {
-        die(mysqli_error($conn));
+        die("Error:" . implode(", ", $sql->errorInfo()));
     }
 }
 ?>
@@ -33,17 +35,17 @@ if (isset($_POST['submit'])) {
     <form action="" method="POST" class="my-4">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" name="name" id="name" class="form-control" required>
+            <input type="text" name="name" id="name" class="form-control" required autocomplete="off">
         </div>
 
         <div class="form-group">
             <label for="rollno">Roll Number</label>
-            <input type="text" name="rollno" id="rollno" class="form-control" required>
+            <input type="text" name="rollno" id="rollno" class="form-control" required autocomplete="off">
         </div>
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" name="email" id="email" class="form-control" required>
+            <input type="email" name="email" id="email" class="form-control" required autocomplete="off">
         </div>
 
         <button type="submit" name="submit" class="btn btn-primary mt-3">Add User</button>

@@ -1,10 +1,16 @@
 <?php
 
-$conn=new mysqli('localhost','root','admin','exam');
+$ds = "mysql:host=localhost;dbname=exam";
 
-if($conn->connect_error){
-    die("connection error".$conn->connect_error);
+try {
+    $conn = new PDO($ds,"root","admin");
+
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    //echo "Connection successful!";
+
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
-
 
 ?>

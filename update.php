@@ -5,10 +5,12 @@ if (isset($_GET['updateid'])) {
     $id = $_GET['updateid'];
 
     // Fetch existing details from database
-    $sql = "SELECT * FROM `tablexam` WHERE id = '$id'";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
+    $sql = $conn->prepare("SELECT * FROM `tablexam` WHERE id = ?");
+    $sql->bindParam(1,$id,PDO::PARAM_INT);
+    $sql->execute();
+    $row = $sql->fetch(PDO::FETCH_ASSOC);
 
+    if ($row){
     $name = $row['name'];
     $rollno = $row['rollno'];
     $email = $row['email'];
@@ -19,15 +21,22 @@ if (isset($_GET['updateid'])) {
         $rollno = $_POST['rollno'];
         $email = $_POST['email'];
 
-        $sql = "UPDATE `tablexam` SET name = '$name', rollno = '$rollno', email = '$email' WHERE id = '$id'";
-        $result = mysqli_query($conn, $sql);
+        $sql = $conn->prepare("UPDATE `tablexam` SET name = ?, rollno = ?, email = ? WHERE id = ?");
+        $sql->bindParam(1,$name,PDO::PARAM_STR);
+        $sql->bindParam(2,$rollno,PDO::PARAM_INT);
+        $sql->bindParam(3,$email,PDO::PARAM_STR);
+        $sql->bindParam(4, $id, PDO::PARAM_INT);
 
-        if ($result) {
+        if ($sql->execute()) {
             header('Location: display.php');
+            exit();
         } else {
-            die(mysqli_error($conn));
+            die("Error updating record: " . implode(", ", $sql->errorInfo()));
         }
     }
+} else {
+    echo "No record found for this ID.";
+}
 } else {
     echo "No record selected for update.";
 }

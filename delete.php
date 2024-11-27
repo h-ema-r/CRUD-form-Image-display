@@ -5,13 +5,13 @@ if (isset($_GET['deleteid'])) {
     $id = $_GET['deleteid'];
 
     // Delete the user from the database
-    $sql = "DELETE FROM `tablexam` WHERE id = '$id'";
-    $result = mysqli_query($conn, $sql);
+    $sql = $conn->prepare("DELETE FROM `tablexam` WHERE id = ?");
+    $sql->bindParam(1,$id,PDO::PARAM_INT);
 
-    if ($result) {
+    if ($sql->execute()) {
         header('Location: display.php');
     } else {
-        die(mysqli_error($conn));
+        die("Error deleting record: " . $sql->errorInfo()[2]);
     }
 }
 ?>

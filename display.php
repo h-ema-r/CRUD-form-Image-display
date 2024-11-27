@@ -2,8 +2,8 @@
 include 'connect.php';
 
 // Fetch all users
-$sql = "SELECT * FROM `tablexam`";
-$result = mysqli_query($conn, $sql);
+$sql = $conn->prepare("SELECT * FROM `tablexam`");
+$sql->execute();
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +33,7 @@ $result = mysqli_query($conn, $sql);
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+            <?php while ($row =$sql->fetch(PDO::FETCH_ASSOC)) { ?>
                 <tr>
                     <td><?php echo $row['id']; ?></td>
                     <td><?php echo $row['name']; ?></td>
